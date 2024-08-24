@@ -1,9 +1,13 @@
 package com.emazon.stock.adapters.driving.http.controller;
 
 import com.emazon.stock.adapters.driving.http.dto.request.CategoryRequest;
+import com.emazon.stock.adapters.driving.http.dto.response.CategoryResponse;
+import com.emazon.stock.adapters.driving.http.dto.response.PaginationInfoResponse;
 import com.emazon.stock.adapters.driving.http.mapper.request.ICategoryRequestMapper;
+import com.emazon.stock.adapters.driving.http.mapper.response.ICategoryResponseMapper;
 import com.emazon.stock.domain.api.ICategoryServicePort;
 import com.emazon.stock.domain.model.Category;
+import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.utils.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -15,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,6 +40,9 @@ public class CategoryControllerTest {
 
     @MockBean
     private ICategoryRequestMapper categoryRequestMapper;
+
+    @MockBean
+    private ICategoryResponseMapper categoryResponseMapper;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -107,5 +115,105 @@ public class CategoryControllerTest {
                         .content(objectMapper.writeValueAsString(categoryRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage().contains(Constants.EXCEPTION_CATEGORY_DESCRIPTION_BLANK)));
+    }
+
+    @Test
+    public void testGetAllCategories() throws Exception {
+        PaginationInfo<Category> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(categoryServicePort.getAllCategories(anyInt(), anyInt(), anyString())).thenReturn(paginationInfo);
+
+        PaginationInfoResponse<CategoryResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(categoryResponseMapper.toPaginationInfo(paginationInfo)).thenReturn(paginationInfoResponse.getPaginationInfo());
+
+        mockMvc.perform(get("/category/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("order", "ASC")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void testGetAllCategoriesWithIncorrectParamPageShouldFail() throws Exception {
+        PaginationInfo<Category> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(categoryServicePort.getAllCategories(anyInt(), anyInt(), anyString())).thenReturn(paginationInfo);
+
+        PaginationInfoResponse<CategoryResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(categoryResponseMapper.toPaginationInfo(paginationInfo)).thenReturn(paginationInfoResponse.getPaginationInfo());
+
+        mockMvc.perform(get("/category/all")
+                        .param("page", "-8")
+                        .param("size", "10")
+                        .param("order", "ASC")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage().contains(Constants.EXCEPTION_MIN_VALUE_PAGE)));;
+    }
+
+    @Test
+    public void testGetAllCategoriesWithIncorrectParamSizeShouldFail() throws Exception {
+        PaginationInfo<Category> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(categoryServicePort.getAllCategories(anyInt(), anyInt(), anyString())).thenReturn(paginationInfo);
+
+        PaginationInfoResponse<CategoryResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(categoryResponseMapper.toPaginationInfo(paginationInfo)).thenReturn(paginationInfoResponse.getPaginationInfo());
+
+        mockMvc.perform(get("/category/all")
+                        .param("page", "0")
+                        .param("size", "0")
+                        .param("order", "ASC")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage().contains(Constants.EXCEPTION_MIN_VALUES_PER_PAGE)));;
+    }
+
+    @Test
+    public void testGetAllCategoriesWithIncorrectParamOrderShouldFail() throws Exception {
+        PaginationInfo<Category> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(categoryServicePort.getAllCategories(anyInt(), anyInt(), anyString())).thenReturn(paginationInfo);
+
+        PaginationInfoResponse<CategoryResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(categoryResponseMapper.toPaginationInfo(paginationInfo)).thenReturn(paginationInfoResponse.getPaginationInfo());
+
+        mockMvc.perform(get("/category/all")
+                        .param("page", "0")
+                        .param("size", "1")
+                        .param("order", "ASCDESC")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage().contains(Constants.EXCEPTION_REGEX_ORDER)));;
     }
 }

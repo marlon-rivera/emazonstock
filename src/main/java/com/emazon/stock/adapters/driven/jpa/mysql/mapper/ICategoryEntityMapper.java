@@ -5,6 +5,7 @@ import com.emazon.stock.domain.model.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper(componentModel = "spring")
@@ -18,4 +19,7 @@ public interface ICategoryEntityMapper {
     default Optional<Category> toCategoryOptional(Optional<CategoryEntity> categoryEntityOptional) {
         return categoryEntityOptional.map(this::toCategory);
     }
+
+    List<Category> toCategoryList(List<CategoryEntity> categoryListEntity);
+
 }

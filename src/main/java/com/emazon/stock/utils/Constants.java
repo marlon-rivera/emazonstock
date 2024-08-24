@@ -7,6 +7,13 @@ public class Constants {
     public static final int MAX_CHARACTERS_NAME_CATEGORY = 50;
     public static final int MAX_CHARACTERS_DESCRIPTION_CATEGORY = 90;
     public static final int MIN_CHARACTERS = 1;
+    public static final String ORDER_ASC = "ASC";
+    public static final String DEFAULT_VALUE_SIZE_PAGE = "10";
+    public static final String DEFAULT_VALUE_NUMBER_PAGE = "0";
+    public static final int MIN_VALUES_PER_PAGE = 1;
+    public static final int MIN_VALUE_PAGE = 0;
+    public static final String REGEX_ORDER = "ASC|DESC";
+
 
     //Exceptions messages
     public static final String EXCEPTION_CATEGORY_NAME_BLANK = "El nombre de la categoria no puede estar vacio.";
@@ -14,5 +21,9 @@ public class Constants {
     public static final String EXCEPTION_CATEGORY_ALREADY_EXISTS = "La categoria con ese nombre ya existe.";
     public static final String EXCEPTION_CATEGORY_MAXIMUM_NUMBER_CHARACTERS_NAME = "El nombre de la categoria es muy largo, maximo 50 caracteres.";
     public static final String EXCEPTION_CATEGORY_MAXIMUM_NUMBER_CHARACTERS_DESCRIPTION = "La descripcion de la categoria es muy largo, maximo 90 caracteres.";
+    public static final String EXCEPTION_CATEGORY_NO_DATA_FOUND  = "No se encontraron categorias registradas.";
+    public static final String EXCEPTION_MIN_VALUES_PER_PAGE = "El minimo de resultados por pagina es de 1.";
+    public static final String EXCEPTION_MIN_VALUE_PAGE = "El numero de pagina minimo es 0.";
+    public static final String EXCEPTION_REGEX_ORDER = "No se encontró el orden solicitado.";
 
 }

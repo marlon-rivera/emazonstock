@@ -3,6 +3,7 @@ package com.emazon.stock.domain.api.usecase;
 import com.emazon.stock.domain.api.ICategoryServicePort;
 import com.emazon.stock.domain.exception.*;
 import com.emazon.stock.domain.model.Category;
+import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.domain.spi.ICategoryPersistencePort;
 import com.emazon.stock.utils.Constants;
 
@@ -34,6 +35,15 @@ public class CategoryUseCaseImpl implements ICategoryServicePort {
             throw new CategoryMaximumNumberCharactersDescriptionException();
         }
         persistencePort.saveCategory(category);
+    }
+
+    @Override
+    public PaginationInfo<Category> getAllCategories(int page, int size, String order) {
+        PaginationInfo<Category> categories = persistencePort.getAllCategories(page, size, order);
+        if(categories.getList().isEmpty()){
+            throw  new CategoryNoDataFoundException();
+        }
+        return categories;
     }
 }
 

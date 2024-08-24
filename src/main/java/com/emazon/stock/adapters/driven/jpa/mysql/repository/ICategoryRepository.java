@@ -12,5 +12,7 @@ import java.util.Optional;
 public interface ICategoryRepository extends JpaRepository<CategoryEntity, Long> {
 
     Optional<CategoryEntity> findByName(String name);
+    Page<CategoryEntity> findAllByOrderByNameAsc(Pageable pageable);
+    Page<CategoryEntity> findAllByOrderByNameDesc(Pageable pageable);
 
 }
