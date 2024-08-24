@@ -1,0 +1,72 @@
+# Directorio de compilación de Gradle
+/build/
+/out/
+
+# Archivos de configuración específicos de Gradle
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Logs
+*.log
+
+# Archivos de IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Carpetas de configuración de IntelliJ específicas
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+
+# Configuración de run/debug en IntelliJ IDEA
+.idea/**/runConfigurations/
+
+# Archivos de sistema específicos de IntelliJ IDEA
+.idea/**/modules.xml
+.idea/**/vcs.xml
+.idea/**/idea_modules.xml
+
+# Archivos y directorios generados por el compilador
+/out/
+*.class
+
+# Archivos y directorios del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Directorios de configuración específicos del sistema operativo
+*~
+
+# Archivos de Maven si también estás utilizando Maven
+.mvn/
+target/
+
+# Archivos de dependencia específicos de Gradle
+.gradle/
+
+# Archivos de configuración y autogenerados por Gradle
+gradle-app.setting
+gradle-app/
+
+# Archivos de empaquetado y distribución
+*.jar
+*.war
+*.ear
+
+# Archivos de base de datos locales
+*.h2.db
+*.mv.db
+*.sqlite
+
+# Archivos de configuración y propiedades del entorno local
+.env
+*.properties
+
+# Logs de test y reports
+test-results/
+build/reports/
