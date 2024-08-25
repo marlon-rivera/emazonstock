@@ -32,5 +32,5 @@ public class Constants {
     public static final String EXCEPTION_BRAND_ALREADY_EXISTS = "La marca con ese nombre ya existe.";
     public static final String EXCEPTION_BRAND_MAXIMUM_NUMBER_CHARACTERS_NAME = "El nombre de la marca es muy largo, maximo 50 caracteres.";
     public static final String EXCEPTION_BRAND_MAXIMUM_NUMBER_CHARACTERS_DESCRIPTION = "La descripcion de la marca es muy largo, maximo 90 caracteres.";
-
+    public static final String EXCEPTION_BRAND_NO_DATA_FOUND  = "No se encontraron marcas registradas.";
 }

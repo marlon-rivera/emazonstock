@@ -3,6 +3,7 @@ package com.emazon.stock.domain.api.usecase;
 import com.emazon.stock.domain.api.IBrandServicePort;
 import com.emazon.stock.domain.exception.brand.*;
 import com.emazon.stock.domain.model.Brand;
+import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.domain.spi.IBrandPersistencePort;
 import com.emazon.stock.utils.Constants;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,14 @@ public class BrandUseCaseImpl implements IBrandServicePort {
             throw new BrandMaximumNumberCharactersDescriptionException();
         }
         brandPersistencePort.saveBrand(brand);
+    }
+
+    @Override
+    public PaginationInfo<Brand> getAllBrands(int page, int size, String order) {
+        PaginationInfo<Brand> brands = brandPersistencePort.getAllBrands(page, size, order);
+        if(brands.getList().isEmpty()){
+            throw new BrandNoDataFoundException();
+        }
+        return brands;
     }
 }

@@ -42,4 +42,10 @@ public class BrandControllerAdvisor {
                 new ExceptionResponse(Constants.EXCEPTION_BRAND_MAXIMUM_NUMBER_CHARACTERS_DESCRIPTION, HttpStatus.BAD_REQUEST.toString(), LocalDateTime.now()));
     }
 
+    @ExceptionHandler(BrandNoDataFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleBrandNoDataFoundException(BrandNoDataFoundException ex) {
+        return ResponseEntity.badRequest().body(
+                new ExceptionResponse(Constants.EXCEPTION_BRAND_NO_DATA_FOUND, HttpStatus.BAD_REQUEST.toString(), LocalDateTime.now()));
+    }
+
 }
