@@ -13,6 +13,8 @@ public class Constants {
     public static final int MIN_VALUES_PER_PAGE = 1;
     public static final int MIN_VALUE_PAGE = 0;
     public static final String REGEX_ORDER = "ASC|DESC";
+    public static final int MAX_CHARACTERS_NAME_BRAND = 50;
+    public static final int MAX_CHARACTERS_DESCRIPTION_BRAND = 120;
 
 
     //Exceptions messages
@@ -25,5 +27,10 @@ public class Constants {
     public static final String EXCEPTION_MIN_VALUES_PER_PAGE = "El minimo de resultados por pagina es de 1.";
     public static final String EXCEPTION_MIN_VALUE_PAGE = "El numero de pagina minimo es 0.";
     public static final String EXCEPTION_REGEX_ORDER = "No se encontró el orden solicitado.";
+    public static final String EXCEPTION_BRAND_NAME_BLANK = "El nombre de la marca no puede estar vacio.";
+    public static final String EXCEPTION_BRAND_DESCRIPTION_BLANK = "La descripcion de la marca no puede estar vacio.";
+    public static final String EXCEPTION_BRAND_ALREADY_EXISTS = "La marca con ese nombre ya existe.";
+    public static final String EXCEPTION_BRAND_MAXIMUM_NUMBER_CHARACTERS_NAME = "El nombre de la marca es muy largo, maximo 50 caracteres.";
+    public static final String EXCEPTION_BRAND_MAXIMUM_NUMBER_CHARACTERS_DESCRIPTION = "La descripcion de la marca es muy largo, maximo 90 caracteres.";
 
 }

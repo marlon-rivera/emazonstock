@@ -1,6 +1,6 @@
 package com.emazon.stock.configuration.exceptionhandler;
 
-import com.emazon.stock.domain.exception.*;
+import com.emazon.stock.domain.exception.category.*;
 import com.emazon.stock.utils.Constants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

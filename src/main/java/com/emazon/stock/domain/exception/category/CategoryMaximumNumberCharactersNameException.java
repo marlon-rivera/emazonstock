@@ -1,4 +1,4 @@
-package com.emazon.stock.domain.exception;
+package com.emazon.stock.domain.exception.category;
 
 public class CategoryMaximumNumberCharactersNameException extends RuntimeException {
 

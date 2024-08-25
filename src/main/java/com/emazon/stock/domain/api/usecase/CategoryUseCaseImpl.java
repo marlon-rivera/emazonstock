@@ -1,7 +1,7 @@
 package com.emazon.stock.domain.api.usecase;
 
 import com.emazon.stock.domain.api.ICategoryServicePort;
-import com.emazon.stock.domain.exception.*;
+import com.emazon.stock.domain.exception.category.*;
 import com.emazon.stock.domain.model.Category;
 import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.domain.spi.ICategoryPersistencePort;
