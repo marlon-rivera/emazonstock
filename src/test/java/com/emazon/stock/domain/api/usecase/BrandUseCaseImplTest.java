@@ -2,6 +2,7 @@ package com.emazon.stock.domain.api.usecase;
 
 import com.emazon.stock.domain.exception.brand.*;
 import com.emazon.stock.domain.model.Brand;
+import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.domain.spi.IBrandPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,9 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class BrandUseCaseImplTest {
@@ -71,6 +73,43 @@ class BrandUseCaseImplTest {
         Brand brand = new Brand(1L, "Brand", "Description for newbrand");
         when(brandPersistencePort.findCategoryByName("Brand")).thenReturn(Optional.of(brand));
         assertThrows(BrandAlreadyExistsException.class, () -> brandUseCase.saveBrand(brand));
+    }
+
+    @Test
+    void  testGetAllBrandsSuccess(){
+        PaginationInfo<Brand> paginationInfo = new PaginationInfo<>(
+                List.of(new Brand(1L, "Brand", "Description for newbrand")),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(brandPersistencePort.getAllBrands(anyInt(), anyInt(), anyString())).thenReturn(paginationInfo);
+
+        PaginationInfo<Brand> result = brandUseCase.getAllBrands(1, 10, "ASC");
+
+        assertNotNull(result);
+        assertFalse(result.getList().isEmpty());
+        assertEquals("Brand", result.getList().get(0).getName());
+    }
+
+    @Test
+    void testGetAllCategoriesNoData(){
+        PaginationInfo<Brand> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(brandPersistencePort.getAllBrands(anyInt(), anyInt(), anyString())).thenReturn(paginationInfo);
+
+        assertThrows(BrandNoDataFoundException.class,() ->
+                brandUseCase.getAllBrands(0, 10, "ASC"));
     }
 
 }

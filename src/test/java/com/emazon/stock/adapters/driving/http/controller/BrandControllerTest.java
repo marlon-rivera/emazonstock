@@ -1,10 +1,13 @@
 package com.emazon.stock.adapters.driving.http.controller;
 
-import com.emazon.stock.adapters.driven.jpa.mysql.repository.IBrandRepository;
 import com.emazon.stock.adapters.driving.http.dto.request.BrandRequest;
+import com.emazon.stock.adapters.driving.http.dto.response.BrandResponse;
+import com.emazon.stock.adapters.driving.http.dto.response.PaginationInfoResponse;
 import com.emazon.stock.adapters.driving.http.mapper.request.IBrandRequestMapper;
+import com.emazon.stock.adapters.driving.http.mapper.response.IBrandResponseMapper;
 import com.emazon.stock.domain.api.IBrandServicePort;
 import com.emazon.stock.domain.model.Brand;
+import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.utils.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -16,13 +19,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = BrandController.class)
 @ExtendWith(MockitoExtension.class)
@@ -36,6 +40,9 @@ class BrandControllerTest {
 
     @MockBean
     private IBrandRequestMapper brandRequestMapper;
+
+    @MockBean
+    IBrandResponseMapper brandResponseMapper;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -101,5 +108,100 @@ class BrandControllerTest {
                 .content(objectMapper.writeValueAsString(brandRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage().contains(Constants.EXCEPTION_BRAND_DESCRIPTION_BLANK)));
+    }
+
+    @Test
+    void testGetAllBrands() throws Exception{
+        PaginationInfo<Brand> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(brandServicePort.getAllBrands(anyInt(), anyInt(), anyString())).thenReturn(paginationInfo);
+
+        PaginationInfoResponse<BrandResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(brandResponseMapper.toPaginationInfoResponse(paginationInfo)).thenReturn(paginationInfoResponse).thenReturn(paginationInfoResponse);
+
+        mockMvc.perform(get("/brand/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("order", "ASC")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void testGetAllBrandsWithIncorrectParamPageShouldFail() throws Exception {
+        PaginationInfo<Brand> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(brandServicePort.getAllBrands(anyInt(), anyInt(), anyString())).thenReturn(paginationInfo);
+        PaginationInfoResponse<BrandResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(brandResponseMapper.toPaginationInfoResponse(paginationInfo)).thenReturn(paginationInfoResponse);
+
+        mockMvc.perform(get("/brand/all")
+                .param("page", "-10")
+                .param("size", "10")
+                .param("order", "ASC")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage().contains(Constants.EXCEPTION_MIN_VALUE_PAGE)));
+    }
+
+    @Test
+    void testGetAllBrandsWithIncorrectParamSizeShouldFail() throws Exception {
+        PaginationInfo<Brand> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(brandServicePort.getAllBrands(anyInt(), anyInt(), anyString())).thenReturn(paginationInfo);
+        PaginationInfoResponse<BrandResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(brandResponseMapper.toPaginationInfoResponse(paginationInfo)).thenReturn(paginationInfoResponse);
+
+        mockMvc.perform(get("/brand/all")
+                .param("page", "0")
+                .param("size", "-10")
+                .param("order", "ASC"))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage().contains(Constants.EXCEPTION_MIN_VALUES_PER_PAGE)));
+    }
+
+    @Test
+    void testGetAllBrandsWithIncorrectParamOrderShouldFail() throws Exception {
+        PaginationInfo<Brand> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(brandServicePort.getAllBrands(anyInt(), anyInt(), anyString())).thenReturn(paginationInfo);
+        PaginationInfoResponse<BrandResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(brandResponseMapper.toPaginationInfoResponse(paginationInfo)).thenReturn(paginationInfoResponse);
+
+        mockMvc.perform(get("/brand/all")
+                .param("page", "0")
+                .param("size", "1")
+                .param("order", "incorrectorder"))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Objects.requireNonNull(result.getResolvedException()).getMessage().contains(Constants.EXCEPTION_REGEX_ORDER));
     }
 }
