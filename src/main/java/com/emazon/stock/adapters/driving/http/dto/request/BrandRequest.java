@@ -12,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BrandRequest {
 
+    private Long id;
     @NotNull(message = Constants.EXCEPTION_BRAND_NAME_BLANK)
     @Size(min = Constants.MIN_CHARACTERS, message = Constants.EXCEPTION_BRAND_NAME_BLANK)
     @Size(max = Constants.MAX_CHARACTERS_NAME_BRAND, message = Constants.EXCEPTION_BRAND_MAXIMUM_NUMBER_CHARACTERS_NAME)

@@ -49,7 +49,7 @@ class BrandControllerTest {
 
     @Test
     void testSaveBrand() throws Exception {
-        BrandRequest brandRequest = new BrandRequest("Brand", "Description for brand");
+        BrandRequest brandRequest = new BrandRequest(1L, "Brand", "Description for brand");
         Brand brand = new Brand(null, "Brand", "Description for brand");
 
         when(brandRequestMapper.toBrand(any(BrandRequest.class))).thenReturn(brand);
@@ -67,7 +67,7 @@ class BrandControllerTest {
     @Test
     void testSaveBrandWithLongNameShouldFail() throws Exception {
         String longBrandName = "ThisBrandNameIsWayTooLongAndShouldFailCauseAValidationError";
-        BrandRequest brandRequest = new BrandRequest(longBrandName, "Description for brand");
+        BrandRequest brandRequest = new BrandRequest(1L, longBrandName, "Description for brand");
 
         mockMvc.perform(post("/brand/")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -79,7 +79,7 @@ class BrandControllerTest {
     @Test
     void testSaveBrandWithLongDescriptionShouldFail() throws Exception {
         String longDescription = "This Description Is Way Too Long And Should Trigger A Validation Error Because it exceeds the 120 characters limit that has been imposed on this field.";
-        BrandRequest brandRequest = new BrandRequest("Brand", longDescription);
+        BrandRequest brandRequest = new BrandRequest(1L, "Brand", longDescription);
 
         mockMvc.perform(post("/brand/")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -90,7 +90,7 @@ class BrandControllerTest {
 
     @Test
     void testSaveBrandWithEmptyNameShouldFail() throws Exception {
-        BrandRequest brandRequest = new BrandRequest("", "Description for brand");
+        BrandRequest brandRequest = new BrandRequest(1L, "", "Description for brand");
 
         mockMvc.perform(post("/brand/")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +101,7 @@ class BrandControllerTest {
 
     @Test
     void testSaveBrandWithEmptyDescriptionShouldFail() throws Exception {
-        BrandRequest brandRequest = new BrandRequest("Brand", "");
+        BrandRequest brandRequest = new BrandRequest(1L, "Brand", "");
 
         mockMvc.perform(post("/brand/")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -8,6 +8,8 @@ import com.emazon.stock.domain.spi.IBrandPersistencePort;
 import com.emazon.stock.utils.Constants;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 public class BrandUseCaseImpl implements IBrandServicePort {
 
@@ -42,5 +44,10 @@ public class BrandUseCaseImpl implements IBrandServicePort {
             throw new BrandNoDataFoundException();
         }
         return brands;
+    }
+
+    @Override
+    public Optional<Brand> getBrandById(Long id) {
+        return brandPersistencePort.findBrandById(id);
     }
 }

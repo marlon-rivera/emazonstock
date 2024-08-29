@@ -9,4 +9,5 @@ public interface ICategoryPersistencePort {
     void saveCategory(Category category);
     Optional<Category> findCategoryByName(String name);
     PaginationInfo<Category> getAllCategories(int page, int size, String order);
+    Optional<Category> findCategoryById(Long id);
 }

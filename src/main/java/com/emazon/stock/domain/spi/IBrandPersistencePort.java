@@ -10,5 +10,6 @@ public interface IBrandPersistencePort {
     void saveBrand(Brand brand);
     Optional<Brand> findCategoryByName(String name);
     PaginationInfo<Brand> getAllBrands(int page, int size, String order);
+    Optional<Brand> findBrandById(Long id);
 
 }

@@ -49,7 +49,7 @@ public class CategoryControllerTest {
 
     @Test
     void testSaveCategory() throws Exception {
-        CategoryRequest categoryRequest = new CategoryRequest("Category", "Description for category");
+        CategoryRequest categoryRequest = new CategoryRequest(1L, "Category", "Description for category");
         Category category = new Category(null, "Category", "Description for category");
 
         when(categoryRequestMapper.toCategory(any(CategoryRequest.class))).thenReturn(category);
@@ -68,7 +68,7 @@ public class CategoryControllerTest {
     void testSaveCategoryWithLongNameShouldFail() throws Exception {
         String longCategoryName = "ThisCategoryNameIsWayTooLongAndShouldCauseAValidationError";
 
-        CategoryRequest categoryRequest = new CategoryRequest(longCategoryName, "Description for category");
+        CategoryRequest categoryRequest = new CategoryRequest(1L ,longCategoryName, "Description for category");
 
         mockMvc.perform(post("/category/")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +82,7 @@ public class CategoryControllerTest {
         String validCategoryName = "Category";
         String longDescription = "This description is too long and should trigger a validation error because it exceeds the 120 characters limit that has been imposed on this field.";
 
-        CategoryRequest categoryRequest = new CategoryRequest(validCategoryName, longDescription);
+        CategoryRequest categoryRequest = new CategoryRequest(1L, validCategoryName, longDescription);
 
         mockMvc.perform(post("/category/")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -94,7 +94,7 @@ public class CategoryControllerTest {
     @Test
     void testSaveCategoryWithEmptyNameShouldFail() throws Exception {
         String validDescription = "This is a valid description with less than 120 characters.";
-        CategoryRequest categoryRequest = new CategoryRequest("", validDescription);
+        CategoryRequest categoryRequest = new CategoryRequest(1L, "", validDescription);
 
         mockMvc.perform(post("/category/")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -108,7 +108,7 @@ public class CategoryControllerTest {
         String validName = "ValidCategoryName";
         String emptyDescription = "";
 
-        CategoryRequest categoryRequest = new CategoryRequest(validName, emptyDescription);
+        CategoryRequest categoryRequest = new CategoryRequest(1L, validName, emptyDescription);
 
         mockMvc.perform(post("/category/")
                         .contentType(MediaType.APPLICATION_JSON)

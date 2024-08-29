@@ -49,4 +49,9 @@ public class BrandAdapter implements IBrandPersistencePort {
                 brands.hasPrevious()
         );
     }
+
+    @Override
+    public Optional<Brand> findBrandById(Long id) {
+        return mapper.toBrandOptional(brandRepository.findById(id));
+    }
 }

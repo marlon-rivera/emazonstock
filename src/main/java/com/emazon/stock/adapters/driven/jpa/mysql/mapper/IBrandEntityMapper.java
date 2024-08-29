@@ -14,7 +14,6 @@ public interface IBrandEntityMapper {
 
     BrandEntity toEntity(Brand brand);
 
-    @Mapping(target = "id", ignore = true)
     Brand toBrand(BrandEntity brandEntity);
 
     default Optional<Brand> toBrandOptional(Optional<BrandEntity> brandEntityOptional) {

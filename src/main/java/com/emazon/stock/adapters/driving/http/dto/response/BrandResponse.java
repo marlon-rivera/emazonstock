@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BrandResponse {
 
+    private Long id;
     private String name;
     private String description;
 

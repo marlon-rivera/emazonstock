@@ -7,6 +7,8 @@ import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.domain.spi.ICategoryPersistencePort;
 import com.emazon.stock.utils.Constants;
 
+import java.util.Optional;
+
 public class CategoryUseCaseImpl implements ICategoryServicePort {
 
     private final ICategoryPersistencePort persistencePort;
@@ -44,6 +46,11 @@ public class CategoryUseCaseImpl implements ICategoryServicePort {
             throw  new CategoryNoDataFoundException();
         }
         return categories;
+    }
+
+    @Override
+    public Optional<Category> getCategoryById(Long id) {
+        return persistencePort.findCategoryById(id);
     }
 }
 

@@ -12,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CategoryRequest {
 
+    private Long id;
     @NotNull(message = Constants.EXCEPTION_CATEGORY_NAME_BLANK)
     @Size(min = Constants.MIN_CHARACTERS, message = Constants.EXCEPTION_CATEGORY_NAME_BLANK)
     @Size(max = Constants.MAX_CHARACTERS_NAME_CATEGORY, message = Constants.EXCEPTION_CATEGORY_MAXIMUM_NUMBER_CHARACTERS_NAME)

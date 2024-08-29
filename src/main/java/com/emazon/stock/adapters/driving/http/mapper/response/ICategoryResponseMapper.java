@@ -13,6 +13,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ICategoryResponseMapper {
 
+    @Mapping(target = "id", source = "category.id")
     @Mapping(target = "name", source = "category.name")
     @Mapping(target = "description", source = "category.description")
     CategoryResponse toCategoryResponse(Category category);

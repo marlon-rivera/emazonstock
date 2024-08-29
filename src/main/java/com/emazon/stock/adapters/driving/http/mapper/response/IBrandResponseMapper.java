@@ -12,6 +12,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface IBrandResponseMapper {
 
+    @Mapping(target = "id", source = "brand.id")
     @Mapping(target = "name", source = "brand.name")
     @Mapping(target = "description", source = "brand.description")
     BrandResponse toBrandResponse(Brand brand);

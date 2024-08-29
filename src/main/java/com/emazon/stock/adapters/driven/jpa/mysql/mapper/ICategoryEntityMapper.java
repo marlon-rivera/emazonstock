@@ -13,7 +13,6 @@ public interface ICategoryEntityMapper {
 
     CategoryEntity toEntity(Category category);
 
-    @Mapping(target = "id", ignore = true)
     Category toCategory(CategoryEntity categoryEntity);
 
     default Optional<Category> toCategoryOptional(Optional<CategoryEntity> categoryEntityOptional) {

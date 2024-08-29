@@ -1,15 +1,21 @@
 package com.emazon.stock.configuration;
 
+import com.emazon.stock.adapters.driven.jpa.mysql.adapter.ArticleAdapter;
 import com.emazon.stock.adapters.driven.jpa.mysql.adapter.BrandAdapter;
 import com.emazon.stock.adapters.driven.jpa.mysql.adapter.CategoryAdapter;
+import com.emazon.stock.adapters.driven.jpa.mysql.mapper.IArticleEntityMapper;
 import com.emazon.stock.adapters.driven.jpa.mysql.mapper.IBrandEntityMapper;
 import com.emazon.stock.adapters.driven.jpa.mysql.mapper.ICategoryEntityMapper;
+import com.emazon.stock.adapters.driven.jpa.mysql.repository.IArticleRepository;
 import com.emazon.stock.adapters.driven.jpa.mysql.repository.IBrandRepository;
 import com.emazon.stock.adapters.driven.jpa.mysql.repository.ICategoryRepository;
+import com.emazon.stock.domain.api.IArticleServicePort;
 import com.emazon.stock.domain.api.IBrandServicePort;
 import com.emazon.stock.domain.api.ICategoryServicePort;
+import com.emazon.stock.domain.api.usecase.ArticleUseCaseImpl;
 import com.emazon.stock.domain.api.usecase.BrandUseCaseImpl;
 import com.emazon.stock.domain.api.usecase.CategoryUseCaseImpl;
+import com.emazon.stock.domain.spi.IArticlePersistencePort;
 import com.emazon.stock.domain.spi.IBrandPersistencePort;
 import com.emazon.stock.domain.spi.ICategoryPersistencePort;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +30,8 @@ public class BeanConfiguration {
     private final ICategoryEntityMapper categoryEntityMapper;
     private final IBrandRepository brandRepository;
     private final IBrandEntityMapper brandEntityMapper;
+    private final IArticleRepository articleRepository;
+    private final IArticleEntityMapper articleEntityMapper;
 
     @Bean
     public ICategoryPersistencePort categoryPersistencePort(){
@@ -42,4 +50,10 @@ public class BeanConfiguration {
 
     @Bean
     public IBrandServicePort brandServicePort(){return new BrandUseCaseImpl(brandPersistencePort());}
+
+    @Bean
+    public IArticlePersistencePort articlePersistencePort(){return new ArticleAdapter(articleRepository, articleEntityMapper);}
+
+    @Bean
+    public IArticleServicePort articleServicePort(){return new ArticleUseCaseImpl(articlePersistencePort(), brandServicePort(), categoryServicePort());}
 }
