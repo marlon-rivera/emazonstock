@@ -19,7 +19,7 @@ public class BrandUseCaseImpl implements IBrandServicePort {
     public void saveBrand(Brand brand) {
         brand.setName(brand.getName().trim());
         brand.setDescription(brand.getDescription().trim());
-        if(brandPersistencePort.findCategoryByName(brand.getName()).isPresent()){
+        if(brandPersistencePort.findBrandByName(brand.getName()).isPresent()){
             throw new BrandAlreadyExistsException();
         }
         if(brand.getName().isBlank()){

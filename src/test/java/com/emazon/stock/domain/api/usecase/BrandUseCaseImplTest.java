@@ -34,7 +34,7 @@ class BrandUseCaseImplTest {
         String name = "NewBrand";
         Brand brand = new Brand(1L, name, "Description for newbrand");
 
-        when(brandPersistencePort.findCategoryByName(name)).thenReturn(Optional.empty());
+        when(brandPersistencePort.findBrandByName(name)).thenReturn(Optional.empty());
 
         brandUseCase.saveBrand(brand);
 
@@ -71,7 +71,7 @@ class BrandUseCaseImplTest {
     @Test
     void testSaveBrandThatAlreadyExistsShouldFail(){
         Brand brand = new Brand(1L, "Brand", "Description for newbrand");
-        when(brandPersistencePort.findCategoryByName("Brand")).thenReturn(Optional.of(brand));
+        when(brandPersistencePort.findBrandByName("Brand")).thenReturn(Optional.of(brand));
         assertThrows(BrandAlreadyExistsException.class, () -> brandUseCase.saveBrand(brand));
     }
 

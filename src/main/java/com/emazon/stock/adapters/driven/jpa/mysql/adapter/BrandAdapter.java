@@ -26,7 +26,7 @@ public class BrandAdapter implements IBrandPersistencePort {
     }
 
     @Override
-    public Optional<Brand> findCategoryByName(String name) {
+    public Optional<Brand> findBrandByName(String name) {
         return mapper.toBrandOptional(brandRepository.findByName(name));
     }
 
