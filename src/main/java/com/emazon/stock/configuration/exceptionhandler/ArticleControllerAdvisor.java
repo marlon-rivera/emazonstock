@@ -2,6 +2,7 @@ package com.emazon.stock.configuration.exceptionhandler;
 
 import com.emazon.stock.domain.exception.article.ArticleExceedsCategoriesException;
 import com.emazon.stock.domain.exception.article.ArticleMinimumCategoriesException;
+import com.emazon.stock.domain.exception.article.ArticleNoDataFoundException;
 import com.emazon.stock.domain.exception.article.ArticleWithRepeatedCategoriesException;
 import com.emazon.stock.utils.Constants;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,13 @@ public class ArticleControllerAdvisor {
     public ResponseEntity<ExceptionResponse> handleArticleMinimumCategories(ArticleMinimumCategoriesException ex){
         return ResponseEntity.badRequest().body(
                 new ExceptionResponse(Constants.EXCEPTION_ARTICLE_MINIMUM_CATEGORIES, HttpStatus.BAD_REQUEST.toString(), LocalDateTime.now())
+        );
+    }
+
+    @ExceptionHandler(ArticleNoDataFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleArticleNoDataFound(ArticleNoDataFoundException ex){
+        return ResponseEntity.badRequest().body(
+                new ExceptionResponse(Constants.EXCEPTION_ARTICLE_NO_DATA_FOUND, HttpStatus.BAD_REQUEST.toString(), LocalDateTime.now())
         );
     }
 

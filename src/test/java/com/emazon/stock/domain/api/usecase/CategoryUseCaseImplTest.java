@@ -129,4 +129,29 @@ public class CategoryUseCaseImplTest {
         });
     }
 
+    @Test
+    void testGetCategoryById(){
+        Long id = 1L;
+        Category category = new Category(id, "Category", "Description for category.");
+
+        when(persistencePort.findCategoryById(id)).thenReturn(Optional.of(category));
+
+        Optional<Category> result = categoryUseCase.getCategoryById(id);
+
+        assertTrue(result.isPresent());
+        assertEquals(category, result.get());
+        verify(persistencePort, times(1)).findCategoryById(id);
+    }
+
+    @Test
+    void testGetCategoryByIdNotFound(){
+        Long id = 2L;
+        when(persistencePort.findCategoryById(id)).thenReturn(Optional.empty());
+
+        Optional<Category> result = categoryUseCase.getCategoryById(id);
+
+        assertFalse(result.isPresent());
+        verify(persistencePort, times(1)).findCategoryById(id);
+    }
+
 }

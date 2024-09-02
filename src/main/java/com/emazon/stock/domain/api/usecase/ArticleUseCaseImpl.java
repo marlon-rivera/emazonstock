@@ -5,16 +5,18 @@ import com.emazon.stock.domain.api.IBrandServicePort;
 import com.emazon.stock.domain.api.ICategoryServicePort;
 import com.emazon.stock.domain.exception.article.ArticleExceedsCategoriesException;
 import com.emazon.stock.domain.exception.article.ArticleMinimumCategoriesException;
+import com.emazon.stock.domain.exception.article.ArticleNoDataFoundException;
 import com.emazon.stock.domain.exception.article.ArticleWithRepeatedCategoriesException;
 import com.emazon.stock.domain.exception.brand.BrandNoDataFoundException;
 import com.emazon.stock.domain.exception.category.CategoryNoDataFoundException;
 import com.emazon.stock.domain.model.Article;
 import com.emazon.stock.domain.model.Category;
+import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.domain.spi.IArticlePersistencePort;
 import com.emazon.stock.utils.Constants;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,9 +44,6 @@ public class ArticleUseCaseImpl implements IArticleServicePort {
         if (iBrandServicePort.getBrandById(article.getBrand().getId()).isEmpty()){
             throw new BrandNoDataFoundException();
         }
-        List<Category> categoriesSorted = new ArrayList<>(article.getCategories().stream().toList());
-        categoriesSorted.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
-        article.setCategories(new HashSet<>(categoriesSorted));
         iArticlePersistencePort.saveArticle(article);
     }
 
@@ -56,5 +55,15 @@ public class ArticleUseCaseImpl implements IArticleServicePort {
             categoriesIds.add(category.getId());
             article.addCategory(category);
         }
+    }
+
+
+    @Override
+    public PaginationInfo<Article> getAllArticles(int page, int size, String sortBy, String sortDirection, List<Long> idsCategories) {
+        PaginationInfo<Article> articles = iArticlePersistencePort.getAllArticles(page, size, sortBy, sortDirection, idsCategories);
+        if(articles.getList().isEmpty()){
+            throw new ArticleNoDataFoundException();
+        }
+        return articles;
     }
 }

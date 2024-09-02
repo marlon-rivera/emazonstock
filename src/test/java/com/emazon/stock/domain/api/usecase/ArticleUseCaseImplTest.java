@@ -4,11 +4,14 @@ import com.emazon.stock.domain.api.IBrandServicePort;
 import com.emazon.stock.domain.api.ICategoryServicePort;
 import com.emazon.stock.domain.exception.article.ArticleExceedsCategoriesException;
 import com.emazon.stock.domain.exception.article.ArticleMinimumCategoriesException;
+import com.emazon.stock.domain.exception.article.ArticleNoDataFoundException;
 import com.emazon.stock.domain.exception.article.ArticleWithRepeatedCategoriesException;
 import com.emazon.stock.domain.exception.brand.BrandNoDataFoundException;
+import com.emazon.stock.domain.exception.category.CategoryNoDataFoundException;
 import com.emazon.stock.domain.model.Article;
 import com.emazon.stock.domain.model.Brand;
 import com.emazon.stock.domain.model.Category;
+import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.domain.spi.IArticlePersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,9 +21,11 @@ import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -130,6 +135,81 @@ class ArticleUseCaseImplTest {
         article.setCategories(categories);
         assertThrows(ArticleWithRepeatedCategoriesException.class, () -> articleUseCase.saveArticle(article));
     }
+
+    @Test
+    void testSaveArticleWithCategoriesThatNotExistsShouldFail() {
+        Category category = new Category(1L, "name", "description");
+        Category category1 = new Category(1L, "", "");
+        Brand brand = new Brand(1L, "name", "description");
+        when(brandServicePort.getBrandById(1L)).thenReturn(Optional.of(brand));
+        Set<Category> categories = new HashSet<>();
+        categories.add(category);
+        categories.add(category1);
+        System.out.println(categories.size());
+        Article article = new Article(1L, "name", "description", 1, BigDecimal.ONE, brand);
+        article.setCategories(categories);
+        assertThrows(CategoryNoDataFoundException.class, () -> articleUseCase.saveArticle(article));
+    }
+
+    @Test
+    void getAllArticles_ShouldThrowArticleNoDataFoundException_WhenNoArticlesFound() {
+        int page = 0;
+        int size = 10;
+        String sortBy = "name";
+        String sortDirection = "asc";
+        List<Long> idsCategories = List.of(1L);
+
+        PaginationInfo<Article> emptyPaginationInfo = new PaginationInfo<>(
+              List.of(),
+                page,
+                size,
+                10,
+                1,
+                false,
+                false
+        );
+
+        when(articlePersistencePort.getAllArticles(page, size, sortBy, sortDirection, idsCategories)).thenReturn(emptyPaginationInfo);
+
+        assertThrows(ArticleNoDataFoundException.class, () -> articleUseCase.getAllArticles(page, size, sortBy, sortDirection, idsCategories));
+    }
+
+    @Test
+    void getAllArticles_ShouldReturnArticles_WhenArticlesAreFound() {
+        int page = 0;
+        int size = 10;
+        String sortBy = "name";
+        String sortDirection = "asc";
+        List<Long> idsCategories = List.of(1L);
+
+        Article article = new Article(
+                1L,
+                "Name",
+                "Description",
+                10,
+                new BigDecimal(10),
+                new Brand(1L, "name", "description")
+        );
+        article.setCategories(Set.of(new Category(1L, "name", "description")));
+
+        PaginationInfo<Article> paginationInfo = new PaginationInfo<>(
+                List.of(article),
+                1,
+                1,
+                1,
+                1,
+                false,
+                false
+        );
+
+
+        when(articlePersistencePort.getAllArticles(page, size, sortBy, sortDirection, idsCategories)).thenReturn(paginationInfo);
+
+        PaginationInfo<Article> result = articleUseCase.getAllArticles(page, size, sortBy, sortDirection, idsCategories);
+
+        assertEquals(1, result.getList().size());
+    }
+
 
 
 }

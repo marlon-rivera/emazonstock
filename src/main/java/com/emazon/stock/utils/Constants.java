@@ -35,8 +35,6 @@ public class Constants {
     public static final String EXCEPTION_BRAND_MAXIMUM_NUMBER_CHARACTERS_NAME = "El nombre de la marca es muy largo, maximo 50 caracteres.";
     public static final String EXCEPTION_BRAND_MAXIMUM_NUMBER_CHARACTERS_DESCRIPTION = "La descripcion de la marca es muy largo, maximo 90 caracteres.";
     public static final String EXCEPTION_BRAND_NO_DATA_FOUND  = "No se encontraron marcas registradas.";
-    public static final String EXCEPTION_BRAND_NOT_EXIST = "La marca no existe.";
-    public static final String EXCEPTION_CATEGORY_NOT_EXIST = "La categoria no existe.";
     public static final String EXCEPTION_ARTICLE_WITH_REPEATED_CATEGORIES = "El articulo no puede tener categorias repetidas.";
     public static final String EXCEPTION_ARTICLE_MINIMUM_CATEGORIES = "El minimo de categorias que se pueden asociar a un articulo es 1.";
     public static final String EXCEPTION_ARTICLE_EXCEEDS_CATEGORIES = "El maximo de categorias que se pueden asociar a un articulo es 3.";
@@ -45,5 +43,9 @@ public class Constants {
     public static final String ARTICLE_QUANTITY_MUST_MANDATORY = "La cantidad del articulo es obligatoria.";
     public static final String ARTICLE_PRICE_MUST_MANDATORY = "El precio del articulo es obligatorio.";
     public static final String ARTICLE_BRAND_MUST_MANDATORY = "La marca del articulo es obligatoria.";
+    public static final String EXCEPTION_ARTICLE_NO_DATA_FOUND = "No se encontraron articulos registrados.";
 
+    public static final String ARTICLE_FIND_BY_NAME = "name";
+    public static final String ARTICLE_FIND_BY_BRAND_NAME = "brand.name";
+    public static final String REGEX_ORDERING_CRITERIA_ARTICLE = "brand|name";
 }

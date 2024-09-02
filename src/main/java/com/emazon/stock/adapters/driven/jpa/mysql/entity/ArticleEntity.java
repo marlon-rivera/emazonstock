@@ -39,6 +39,4 @@ public class ArticleEntity {
     )
     @Size(min = Constants.MIN_CATEGORIES_BY_ARTICLE, max = Constants.MAX_CATEGORIES_BY_ARTICLE)
     private Set<CategoryEntity> categories = new HashSet<>();
-
-
 }

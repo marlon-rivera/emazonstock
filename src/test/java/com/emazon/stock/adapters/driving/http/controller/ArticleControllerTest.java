@@ -2,10 +2,14 @@ package com.emazon.stock.adapters.driving.http.controller;
 
 import com.emazon.stock.adapters.driving.http.dto.request.ArticleRequest;
 import com.emazon.stock.adapters.driving.http.dto.request.BrandRequest;
+import com.emazon.stock.adapters.driving.http.dto.response.ArticleResponse;
+import com.emazon.stock.adapters.driving.http.dto.response.PaginationInfoResponse;
 import com.emazon.stock.adapters.driving.http.mapper.request.IArticleRequestMapper;
+import com.emazon.stock.adapters.driving.http.mapper.response.IArticleResponseMapper;
 import com.emazon.stock.domain.api.IArticleServicePort;
 import com.emazon.stock.domain.model.Article;
 import com.emazon.stock.domain.model.Brand;
+import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.utils.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -39,6 +43,9 @@ class ArticleControllerTest {
 
     @MockBean
     private IArticleRequestMapper iArticleRequestMapper;
+
+    @MockBean
+    private IArticleResponseMapper articleResponseMapper;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -96,6 +103,138 @@ class ArticleControllerTest {
                         .content(objectMapper.writeValueAsString(articleRequest))
                 ).andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage().contains(Constants.ARTICLE_BRAND_MUST_MANDATORY)));
+    }
+
+    @Test
+    void testGetAllArticlesOrderByArticleNameAsc() throws Exception {
+        PaginationInfo<Article> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(articleServicePort.getAllArticles(anyInt(), anyInt(), anyString(), anyString(), anyList())).thenReturn(paginationInfo);
+
+        PaginationInfoResponse<ArticleResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(articleResponseMapper.toPaginationInfoResponse(paginationInfo)).thenReturn(paginationInfoResponse);
+
+        mockMvc.perform(get("/article/all")
+                .param("page", "0")
+                .param("size", "10")
+                .param("order", "ASC")
+                .param("sortBy", "name")
+                .param("idsCategories", "1","2"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void testGetAllArticlesOrderByArticleNameDesc() throws Exception {
+        PaginationInfo<Article> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(articleServicePort.getAllArticles(anyInt(), anyInt(), anyString(), anyString(), anyList())).thenReturn(paginationInfo);
+
+        PaginationInfoResponse<ArticleResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(articleResponseMapper.toPaginationInfoResponse(paginationInfo)).thenReturn(paginationInfoResponse);
+
+        mockMvc.perform(get("/article/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("order", "DESC")
+                        .param("sortBy", "name")
+                        .param("idsCategories", "1","2"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void testGetAllArticlesOrderByBrandNameAsc() throws Exception {
+        PaginationInfo<Article> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(articleServicePort.getAllArticles(anyInt(), anyInt(), anyString(), anyString(), anyList())).thenReturn(paginationInfo);
+
+        PaginationInfoResponse<ArticleResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(articleResponseMapper.toPaginationInfoResponse(paginationInfo)).thenReturn(paginationInfoResponse);
+
+        mockMvc.perform(get("/article/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("order", "ASC")
+                        .param("sortBy", "brand")
+                        .param("idsCategories", "1","2"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+    }
+
+    @Test
+    void testGetAllArticlesOrderByBrandNameDesc() throws Exception {
+        PaginationInfo<Article> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(articleServicePort.getAllArticles(anyInt(), anyInt(), anyString(), anyString(), anyList())).thenReturn(paginationInfo);
+
+        PaginationInfoResponse<ArticleResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(articleResponseMapper.toPaginationInfoResponse(paginationInfo)).thenReturn(paginationInfoResponse);
+
+        mockMvc.perform(get("/article/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("order", "DESC")
+                        .param("sortBy", "brand")
+                        .param("idsCategories", "1","2"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+    }
+
+    @Test
+    void testGetAllArticlesWithoutIdsCategories() throws Exception {
+        PaginationInfo<Article> paginationInfo = new PaginationInfo<>(
+                List.of(),
+                0,
+                10,
+                2,
+                1,
+                false,
+                false
+        );
+        when(articleServicePort.getAllArticles(anyInt(), anyInt(), anyString(), anyString(), anyList())).thenReturn(paginationInfo);
+
+        PaginationInfoResponse<ArticleResponse> paginationInfoResponse = new PaginationInfoResponse<>();
+        when(articleResponseMapper.toPaginationInfoResponse(paginationInfo)).thenReturn(paginationInfoResponse);
+
+        mockMvc.perform(get("/article/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("order", "DESC")
+                        .param("sortBy", "brand"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
     }
 
 

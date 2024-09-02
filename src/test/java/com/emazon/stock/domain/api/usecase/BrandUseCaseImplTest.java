@@ -112,4 +112,29 @@ class BrandUseCaseImplTest {
                 brandUseCase.getAllBrands(0, 10, "ASC"));
     }
 
+    @Test
+    void testGetBrandById(){
+        Long id = 1L;
+        Brand brand = new Brand(id, "Brand", "Description for newbrand");
+        when(brandPersistencePort.findBrandById(id)).thenReturn(Optional.of(brand));
+
+        Optional<Brand> result = brandUseCase.getBrandById(id);
+
+        assertTrue(result.isPresent());
+        assertEquals(brand, result.get());
+        verify(brandPersistencePort, times(1)).findBrandById(id);
+
+    }
+
+    @Test
+    void testGetBrandByIdNotFound() {
+        Long brandId = 1L;
+        when(brandPersistencePort.findBrandById(brandId)).thenReturn(Optional.empty());
+
+        Optional<Brand> result = brandUseCase.getBrandById(brandId);
+
+        assertFalse(result.isPresent());
+        verify(brandPersistencePort, times(1)).findBrandById(brandId);
+    }
+
 }
