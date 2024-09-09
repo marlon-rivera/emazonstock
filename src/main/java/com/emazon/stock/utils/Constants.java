@@ -17,6 +17,10 @@ public class Constants {
     public static final String REGEX_ORDER = "ASC|DESC";
     public static final int MAX_CHARACTERS_NAME_BRAND = 50;
     public static final int MAX_CHARACTERS_DESCRIPTION_BRAND = 120;
+    public static final String TOKEN_PREFIX = "Bearer ";
+    public static final String HEADER_AUTH = "Authorization";
+    public static final String ROLE_ = "ROLE_";
+    public static final String ROLE = "ROLE";
 
 
     //Exceptions messages
@@ -48,4 +52,5 @@ public class Constants {
     public static final String ARTICLE_FIND_BY_NAME = "name";
     public static final String ARTICLE_FIND_BY_BRAND_NAME = "brand.name";
     public static final String REGEX_ORDERING_CRITERIA_ARTICLE = "brand|name";
+
 }

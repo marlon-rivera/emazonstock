@@ -22,6 +22,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,7 @@ public class CategoryController {
     @Operation(summary = "Create a new category", description = "This endpoint allows you to create a new category")
     @ApiResponse(responseCode = "201", description = "Category created correctly", content = @Content)
     @ApiResponse(responseCode = "400", description = "Incorrect category creation request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))})
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/")
     public ResponseEntity<Void> saveCategory(@Valid @RequestBody CategoryRequest categoryRequest){
         categoryServicePort.saveCategory(categoryRequestMapper.toCategory(categoryRequest));
