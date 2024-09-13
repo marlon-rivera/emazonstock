@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -71,6 +72,14 @@ public class ArticleController {
                 articleResponseMapper.toPaginationInfoResponse(articleServicePort.getAllArticles(page, size, sortBy, order, idsCategories))
         );
 
+    }
+
+    @Operation(summary = "Add supply to article", description = "This endpoint allows you to add supply to an article")
+    @ApiResponse(responseCode = "200", description = "Supply added correctly.", content = @Content)
+    @PutMapping("/increase/{id}")
+    public ResponseEntity<Void> increaseArticleStock(@PathVariable Long id, @RequestBody BigInteger quantity){
+        articleServicePort.increaseStockArticle(id, quantity);
+        return ResponseEntity.ok().build();
     }
 
 }

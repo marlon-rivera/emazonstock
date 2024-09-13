@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
@@ -243,5 +244,18 @@ class ArticleControllerTest {
 
     }
 
+    @Test
+    void testIncreaseArticleStockSuccess() throws Exception {
+        Long articleId = 1L;
+        BigInteger quantity = BigInteger.TEN;
 
+        doNothing().when(articleServicePort).increaseStockArticle(articleId, quantity);
+
+        mockMvc.perform(put("/article/increase/{id}", articleId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(quantity)))
+                .andExpect(status().isOk());
+
+        verify(articleServicePort).increaseStockArticle(articleId, quantity);
+    }
 }

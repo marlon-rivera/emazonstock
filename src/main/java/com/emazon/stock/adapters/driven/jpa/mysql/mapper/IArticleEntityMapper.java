@@ -5,6 +5,7 @@ import com.emazon.stock.domain.model.Article;
 import org.mapstruct.Mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface IArticleEntityMapper {
@@ -14,5 +15,9 @@ public interface IArticleEntityMapper {
     Article toArticle(ArticleEntity articleEntity);
 
     List<Article> toArticleList(List<ArticleEntity> articleEntities);
+
+    default Optional<Article> toArticleOptional(Optional<ArticleEntity> articleEntity){
+        return articleEntity.map(this::toArticle);
+    }
 
 }

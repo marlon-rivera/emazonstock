@@ -31,6 +31,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/category/").hasRole(RoleEnum.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/brand/").hasRole(RoleEnum.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/article/").hasRole(RoleEnum.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/article/increase/").hasRole(RoleEnum.WAREHOUSE_MANAGER.name())
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManager->

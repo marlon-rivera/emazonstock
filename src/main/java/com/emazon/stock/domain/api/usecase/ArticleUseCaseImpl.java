@@ -17,8 +17,10 @@ import com.emazon.stock.utils.Constants;
 import lombok.RequiredArgsConstructor;
 
 
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -65,5 +67,16 @@ public class ArticleUseCaseImpl implements IArticleServicePort {
             throw new ArticleNoDataFoundException();
         }
         return articles;
+    }
+
+    @Override
+    public void increaseStockArticle(Long id, BigInteger quantity) {
+        Optional<Article> articleOptional = iArticlePersistencePort.getArticleById(id);
+        if(articleOptional.isEmpty()) {
+            throw new ArticleNoDataFoundException();
+        }
+        Article article = articleOptional.get();
+        article.setQuantity(article.getQuantity() + quantity.intValue());
+        iArticlePersistencePort.increaseStockArticle(article);
     }
 }

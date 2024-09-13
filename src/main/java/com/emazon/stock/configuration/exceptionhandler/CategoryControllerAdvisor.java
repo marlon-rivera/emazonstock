@@ -44,7 +44,7 @@ public class CategoryControllerAdvisor {
 
     @ExceptionHandler(CategoryNoDataFoundException.class)
     public ResponseEntity<ExceptionResponse> handleCategoryNoDataFoundException(CategoryNoDataFoundException ex){
-        return ResponseEntity.badRequest().body(
-                new ExceptionResponse(Constants.EXCEPTION_CATEGORY_NO_DATA_FOUND, HttpStatus.BAD_REQUEST.toString(), LocalDateTime.now()));
+        return new ResponseEntity<>(
+                new ExceptionResponse(Constants.EXCEPTION_CATEGORY_NO_DATA_FOUND, HttpStatus.NOT_FOUND.toString(), LocalDateTime.now()), HttpStatus.NOT_FOUND);
     }
 }

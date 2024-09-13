@@ -91,8 +91,13 @@ class ArticleAdapterTest {
       verify(iArticleRepository, times(1)).findAll(pageable);
    }
 
+   @Test
+   void increaseStockArticleShouldSaveArticle() {
+      when(articleEntityMapper.toArticleEntity(article)).thenReturn(articleEntity);
 
+      articleAdapter.increaseStockArticle(article);
 
-
+      verify(iArticleRepository).save(articleEntity);
+   }
 
 }

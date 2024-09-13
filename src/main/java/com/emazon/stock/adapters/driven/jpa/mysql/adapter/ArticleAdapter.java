@@ -16,10 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.math.BigInteger;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class ArticleAdapter implements IArticlePersistencePort {
@@ -30,6 +28,11 @@ public class ArticleAdapter implements IArticlePersistencePort {
     @Override
     public void saveArticle(Article article) {
         articleRepository.save(articleEntityMapper.toArticleEntity(article));
+    }
+
+    @Override
+    public Optional<Article> getArticleById(Long id) {
+        return articleEntityMapper.toArticleOptional(articleRepository.findById(id));
     }
 
 
@@ -50,6 +53,11 @@ public class ArticleAdapter implements IArticlePersistencePort {
         }
 
         return convertPageToPaginationInfo(articleEntities);
+    }
+
+    @Override
+    public void increaseStockArticle(Article article) {
+        articleRepository.save(articleEntityMapper.toArticleEntity(article));
     }
 
     private PaginationInfo<Article> convertPageToPaginationInfo(Page<ArticleEntity> articleEntities) {

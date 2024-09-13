@@ -15,11 +15,13 @@ import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.domain.spi.IArticlePersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -210,6 +212,46 @@ class ArticleUseCaseImplTest {
         assertEquals(1, result.getList().size());
     }
 
+    @Test
+    void increaseStockArticleShouldUpdateStock() {
+        Article article = new Article(
+                1L,
+                "Name",
+                "Description",
+                10,
+                new BigDecimal(10),
+                new Brand(1L, "name", "description")
+        );
 
+        BigInteger quantityToAdd = BigInteger.valueOf(5);
+        Article updatedArticle = new Article(article.getId(), article.getName(), article.getDescription(), article.getQuantity() + quantityToAdd.intValue(), article.getPrice(), article.getBrand());
+        updatedArticle.setCategories(article.getCategories());
+
+        when(articlePersistencePort.getArticleById(article.getId())).thenReturn(Optional.of(article));
+
+        articleUseCase.increaseStockArticle(article.getId(), quantityToAdd);
+
+        ArgumentCaptor<Article> articleCaptor = ArgumentCaptor.forClass(Article.class);
+        verify(articlePersistencePort).increaseStockArticle(articleCaptor.capture());
+        Article capturedArticle = articleCaptor.getValue();
+        
+        assertEquals(updatedArticle.getId(), capturedArticle.getId());
+        assertEquals(updatedArticle.getName(), capturedArticle.getName());
+        assertEquals(updatedArticle.getDescription(), capturedArticle.getDescription());
+        assertEquals(updatedArticle.getQuantity(), capturedArticle.getQuantity());
+        assertEquals(updatedArticle.getPrice(), capturedArticle.getPrice());
+        assertEquals(updatedArticle.getBrand(), capturedArticle.getBrand());
+        assertEquals(updatedArticle.getCategories(), capturedArticle.getCategories());
+    }
+
+    @Test
+    void increaseStockArticleShouldThrowExceptionWhenArticleNotFound() {
+        Long articleId = 1L;
+        BigInteger quantityToAdd = BigInteger.valueOf(5);
+
+        when(articlePersistencePort.getArticleById(articleId)).thenReturn(Optional.empty());
+
+        assertThrows(ArticleNoDataFoundException.class, () -> articleUseCase.increaseStockArticle(articleId, quantityToAdd));
+    }
 
 }
