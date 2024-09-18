@@ -8,6 +8,7 @@ import com.emazon.stock.adapters.driving.http.mapper.request.IArticleRequestMapp
 import com.emazon.stock.adapters.driving.http.mapper.response.IArticleResponseMapper;
 import com.emazon.stock.configuration.jwt.JWTAuthFilter;
 import com.emazon.stock.domain.api.IArticleServicePort;
+import com.emazon.stock.domain.exception.article.ArticleNoDataFoundException;
 import com.emazon.stock.domain.model.Article;
 import com.emazon.stock.domain.model.Brand;
 import com.emazon.stock.domain.model.PaginationInfo;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -257,5 +259,59 @@ class ArticleControllerTest {
                 .andExpect(status().isOk());
 
         verify(articleServicePort).increaseStockArticle(articleId, quantity);
+    }
+
+    @Test
+    void getArticleQuantity_ShouldReturnQuantity_WhenArticleExists() throws Exception {
+        Long articleId = 1L;
+        BigInteger quantity = new BigInteger("100");
+
+        when(articleServicePort.getQuantityArticle(articleId)).thenReturn(quantity);
+
+        mockMvc.perform(get("/article/quantity/{id}", articleId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(quantity.toString()));
+
+        verify(articleServicePort).getQuantityArticle(articleId);
+    }
+
+    @Test
+    void getArticleQuantity_ShouldReturnNotFound_WhenArticleDoesNotExist() throws Exception {
+        Long articleId = 1L;
+
+        when(articleServicePort.getQuantityArticle(articleId)).thenThrow(ArticleNoDataFoundException.class);
+
+        mockMvc.perform(get("/article/quantity/{id}", articleId))
+                .andExpect(status().isNotFound());
+
+        verify(articleServicePort).getQuantityArticle(articleId);
+    }
+
+    @Test
+    void getCategoriesIds_ShouldReturnCategories_WhenArticleExists() throws Exception {
+        Long articleId = 1L;
+        List<Long> categoriesIds = Arrays.asList(1L, 2L, 3L);
+
+        when(articleServicePort.getCategoriesIds(articleId)).thenReturn(categoriesIds);
+
+        mockMvc.perform(get("/article/categories/{id}", articleId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[1,2,3]"));
+
+        verify(articleServicePort).getCategoriesIds(articleId);
+    }
+
+    @Test
+    void getCategoriesIds_ShouldReturnNotFound_WhenArticleDoesNotExist() throws Exception {
+        Long articleId = 1L;
+
+        when(articleServicePort.getCategoriesIds(articleId)).thenThrow(ArticleNoDataFoundException.class);
+
+        mockMvc.perform(get("/article/categories/{id}", articleId))
+                .andExpect(status().isNotFound());
+
+        verify(articleServicePort).getCategoriesIds(articleId);
     }
 }

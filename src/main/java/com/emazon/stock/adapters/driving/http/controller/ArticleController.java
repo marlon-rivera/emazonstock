@@ -66,7 +66,7 @@ public class ArticleController {
             @RequestParam(value = "sortBy", defaultValue = Constants.ARTICLE_FIND_BY_NAME) @Pattern(regexp = Constants.REGEX_ORDERING_CRITERIA_ARTICLE, message = Constants.EXCEPTION_REGEX_ORDER) String sortBy,
             @Parameter(description = "List of ids contained in the articles", example = "1, 2, 3")
             @RequestParam(value = "idsCategories", defaultValue = "1, 2, 3") List<Long> idsCategories
-    ){
+    ) {
 
         return ResponseEntity.ok(
                 articleResponseMapper.toPaginationInfoResponse(articleServicePort.getAllArticles(page, size, sortBy, order, idsCategories))
@@ -77,9 +77,59 @@ public class ArticleController {
     @Operation(summary = "Add supply to article", description = "This endpoint allows you to add supply to an article")
     @ApiResponse(responseCode = "200", description = "Supply added correctly.", content = @Content)
     @PutMapping("/increase/{id}")
-    public ResponseEntity<Void> increaseArticleStock(@PathVariable Long id, @RequestBody BigInteger quantity){
+    public ResponseEntity<Void> increaseArticleStock(@PathVariable Long id, @RequestBody BigInteger quantity) {
         articleServicePort.increaseStockArticle(id, quantity);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(
+            summary = "Get the quantity of an article",
+            description = "This endpoint retrieves the current quantity of a specific article."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Quantity of the article retrieved successfully.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = BigInteger.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Article not found",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class)
+            )
+    )
+    @GetMapping("/quantity/{id}")
+    public ResponseEntity<BigInteger> getArticleQuantity(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(articleServicePort.getQuantityArticle(id));
+    }
+
+    @Operation(
+            summary = "Get category IDs for an article",
+            description = "This endpoint retrieves the category IDs associated with a specific article."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Category IDs retrieved successfully.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = List.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Article not found",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class)
+            )
+    )
+    @GetMapping("/categories/{id}")
+    public ResponseEntity<List<Long>> getCategoriesIds(@PathVariable("id") Long id){
+        return ResponseEntity.ok(articleServicePort.getCategoriesIds(id));
     }
 
 }

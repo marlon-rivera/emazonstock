@@ -254,4 +254,41 @@ class ArticleUseCaseImplTest {
         assertThrows(ArticleNoDataFoundException.class, () -> articleUseCase.increaseStockArticle(articleId, quantityToAdd));
     }
 
+    @Test
+    void getQuantityArticle_ShouldReturnQuantity_WhenArticleExists() {
+        Long idArticle = 1L;
+        BigInteger expectedQuantity = BigInteger.valueOf(100);
+
+        when(articlePersistencePort.getQuantityArticle(idArticle)).thenReturn(expectedQuantity);
+
+        BigInteger actualQuantity = articleUseCase.getQuantityArticle(idArticle);
+
+        assertEquals(expectedQuantity, actualQuantity);
+    }
+
+    @Test
+    void getCategoriesIds_ShouldReturnCategoryIds_WhenArticleExists() {
+        Long idArticle = 1L;
+        Article article = new Article(1L, "Test", "Test", 10, BigDecimal.ONE, new Brand(1L, "name", "description"));
+        Category category1 = new Category(1L, "Category1", "Description");
+        Category category2 = new Category(2L, "Category2", "Description");
+        article.setCategories(Set.of(category1, category2));
+
+        when(articlePersistencePort.getArticleById(idArticle)).thenReturn(Optional.of(article));
+
+        List<Long> actualCategoryIds = articleUseCase.getCategoriesIds(idArticle);
+
+        List<Long> expectedCategoryIds = List.of(1L, 2L);
+        assertEquals(expectedCategoryIds, actualCategoryIds);
+    }
+
+    @Test
+    void getCategoriesIds_ShouldThrowArticleNoDataFoundException_WhenArticleDoesNotExist() {
+        Long idArticle = 999L;
+
+        when(articlePersistencePort.getArticleById(idArticle)).thenReturn(Optional.empty());
+
+        assertThrows(ArticleNoDataFoundException.class, () -> articleUseCase.getCategoriesIds(idArticle));
+    }
+
 }

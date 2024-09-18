@@ -13,6 +13,7 @@ public interface IArticlePersistencePort {
     Optional<Article> getArticleById(Long id);
     PaginationInfo<Article> getAllArticles(int page, int size, String sortBy, String sortDirection, List<Long> idsCategories);
     void increaseStockArticle(Article article);
+    BigInteger getQuantityArticle(Long id);
 
 
 }

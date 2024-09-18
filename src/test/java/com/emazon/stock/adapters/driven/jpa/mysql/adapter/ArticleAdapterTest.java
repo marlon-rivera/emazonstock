@@ -5,6 +5,7 @@ import com.emazon.stock.adapters.driven.jpa.mysql.entity.BrandEntity;
 import com.emazon.stock.adapters.driven.jpa.mysql.entity.CategoryEntity;
 import com.emazon.stock.adapters.driven.jpa.mysql.mapper.IArticleEntityMapper;
 import com.emazon.stock.adapters.driven.jpa.mysql.repository.IArticleRepository;
+import com.emazon.stock.domain.exception.article.ArticleNoDataFoundException;
 import com.emazon.stock.domain.model.Article;
 import com.emazon.stock.domain.model.Brand;
 import com.emazon.stock.domain.model.Category;
@@ -18,11 +19,12 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.*;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
@@ -98,6 +100,29 @@ class ArticleAdapterTest {
       articleAdapter.increaseStockArticle(article);
 
       verify(iArticleRepository).save(articleEntity);
+   }
+
+   @Test
+   void getQuantityArticle_ShouldReturnQuantity_WhenArticleExists() {
+      Long idArticle = 1L;
+      int quantity = 100;
+      ArticleEntity articleEntity = new ArticleEntity();
+      articleEntity.setQuantity(quantity);
+
+      when(iArticleRepository.findById(idArticle)).thenReturn(Optional.of(articleEntity));
+
+      BigInteger actualQuantity = articleAdapter.getQuantityArticle(idArticle);
+
+      assertEquals(BigInteger.valueOf(quantity), actualQuantity);
+   }
+
+   @Test
+   void getQuantityArticle_ShouldThrowArticleNoDataFoundException_WhenArticleDoesNotExist() {
+      Long idArticle = 999L;
+
+      when(iArticleRepository.findById(idArticle)).thenReturn(Optional.empty());
+
+      assertThrows(ArticleNoDataFoundException.class, () -> articleAdapter.getQuantityArticle(idArticle));
    }
 
 }

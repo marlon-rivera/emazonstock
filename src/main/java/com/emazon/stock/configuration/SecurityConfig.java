@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -32,6 +31,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/brand/").hasRole(RoleEnum.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/article/").hasRole(RoleEnum.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/article/increase/").hasRole(RoleEnum.WAREHOUSE_MANAGER.name())
+                                .requestMatchers(HttpMethod.GET, "/quantity/").hasRole(RoleEnum.USER.name())
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManager->

@@ -1,12 +1,10 @@
 package com.emazon.stock.adapters.driven.jpa.mysql.adapter;
 
 import com.emazon.stock.adapters.driven.jpa.mysql.entity.ArticleEntity;
-import com.emazon.stock.adapters.driven.jpa.mysql.entity.CategoryEntity;
 import com.emazon.stock.adapters.driven.jpa.mysql.mapper.IArticleEntityMapper;
 import com.emazon.stock.adapters.driven.jpa.mysql.repository.IArticleRepository;
-import com.emazon.stock.adapters.driven.jpa.mysql.repository.ICategoryRepository;
+import com.emazon.stock.domain.exception.article.ArticleNoDataFoundException;
 import com.emazon.stock.domain.model.Article;
-import com.emazon.stock.domain.model.Category;
 import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.domain.spi.IArticlePersistencePort;
 import com.emazon.stock.utils.Constants;
@@ -58,6 +56,16 @@ public class ArticleAdapter implements IArticlePersistencePort {
     @Override
     public void increaseStockArticle(Article article) {
         articleRepository.save(articleEntityMapper.toArticleEntity(article));
+    }
+
+    @Override
+    public BigInteger getQuantityArticle(Long id) {
+        Optional<ArticleEntity> articleOptional = articleRepository.findById(id);
+        if(articleOptional.isEmpty()){
+            throw new ArticleNoDataFoundException();
+        }
+        ArticleEntity articleEntity = articleOptional.get();
+        return new BigInteger(Integer.toString(articleEntity.getQuantity()));
     }
 
     private PaginationInfo<Article> convertPageToPaginationInfo(Page<ArticleEntity> articleEntities) {

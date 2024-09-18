@@ -79,4 +79,18 @@ public class ArticleUseCaseImpl implements IArticleServicePort {
         article.setQuantity(article.getQuantity() + quantity.intValue());
         iArticlePersistencePort.increaseStockArticle(article);
     }
+
+    @Override
+    public BigInteger getQuantityArticle(Long id) {
+        return iArticlePersistencePort.getQuantityArticle(id);
+    }
+
+    @Override
+    public List<Long> getCategoriesIds(Long idArticle) {
+        Optional<Article> articleOptional = iArticlePersistencePort.getArticleById(idArticle);
+        if(articleOptional.isEmpty()){
+            throw new ArticleNoDataFoundException();
+        }
+        return articleOptional.get().getCategories().stream().map(Category::getId).toList();
+    }
 }

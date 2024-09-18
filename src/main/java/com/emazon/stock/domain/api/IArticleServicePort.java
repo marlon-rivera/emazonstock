@@ -11,6 +11,8 @@ public interface IArticleServicePort {
     void saveArticle(Article article);
     PaginationInfo<Article> getAllArticles(int page, int size, String sortBy, String sortDirection, List<Long> idsCategories);
     void increaseStockArticle(Long id, BigInteger quantity);
+    BigInteger getQuantityArticle(Long id);
+    List<Long> getCategoriesIds(Long idArticle);
 
 
 }
