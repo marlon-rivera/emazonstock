@@ -93,4 +93,18 @@ public class ArticleUseCaseImpl implements IArticleServicePort {
         }
         return articleOptional.get().getCategories().stream().map(Category::getId).toList();
     }
+
+    @Override
+    public PaginationInfo<Article> getArticlesOfShoppingCart(int page, int size, List<Long> idsArticles, String order, List<Long> idsCategories, List<Long> idsBrands) {
+        if(!idsCategories.isEmpty() && !idsBrands.isEmpty()) {
+            return iArticlePersistencePort.findByIdsAndCategoriesAndBrands(page, size, idsArticles, order, idsCategories, idsBrands);
+        }
+        if(!idsBrands.isEmpty()) {
+            return iArticlePersistencePort.findByBrandIdsAndIds(page, size, idsArticles, order, idsBrands);
+        }
+        if(!idsCategories.isEmpty()){
+            return iArticlePersistencePort.findByCategoriesIdsAndIds(page, size, idsArticles, order, idsCategories);
+        }
+        return iArticlePersistencePort.findByIds(page, size, idsArticles, order);
+    }
 }

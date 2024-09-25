@@ -68,6 +68,39 @@ public class ArticleAdapter implements IArticlePersistencePort {
         return new BigInteger(Integer.toString(articleEntity.getQuantity()));
     }
 
+    @Override
+    public PaginationInfo<Article> findByIdsAndCategoriesAndBrands(int page, int size, List<Long> idsArticles, String order, List<Long> idsCategories, List<Long> idsBrands) {
+        Pageable pageable = createPageable(page, size, order);
+        Page<ArticleEntity> articleEntities = articleRepository.findByIdsAndCategoriesAndBrands(idsArticles, idsCategories, idsBrands, pageable);
+        return convertPageToPaginationInfo(articleEntities);
+    }
+
+    @Override
+    public PaginationInfo<Article> findByCategoriesIdsAndIds(int page, int size, List<Long> idsArticles, String order, List<Long> idsCategories) {
+        Pageable pageable = createPageable(page, size, order);
+        Page<ArticleEntity> articleEntities = articleRepository.findByCategoriesIdsAndIds(idsCategories, idsArticles, pageable);
+        return convertPageToPaginationInfo(articleEntities);
+    }
+
+    @Override
+    public PaginationInfo<Article> findByBrandIdsAndIds(int page, int size, List<Long> idsArticles, String order, List<Long> idsBrands) {
+        Pageable pageable = createPageable(page, size, order);
+        Page<ArticleEntity> articleEntities = articleRepository.findByBrandIdsAndIds(idsBrands, idsArticles, pageable);
+        return convertPageToPaginationInfo(articleEntities);
+    }
+
+    @Override
+    public PaginationInfo<Article> findByIds(int page, int size, List<Long> idsArticles, String order) {
+        Pageable pageable = createPageable(page, size, order);
+        Page<ArticleEntity> articleEntities = articleRepository.findByIds(idsArticles, pageable);
+        return convertPageToPaginationInfo(articleEntities);
+    }
+
+    private Pageable createPageable(int page, int size, String order){
+        Sort.Direction direction = order.equalsIgnoreCase(Constants.ORDER_ASC) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        return PageRequest.of(page, size, Sort.by(direction, Constants.ARTICLE_FIND_BY_NAME));
+    }
+
     private PaginationInfo<Article> convertPageToPaginationInfo(Page<ArticleEntity> articleEntities) {
         return new PaginationInfo<>(
                 articleEntityMapper.toArticleList(articleEntities.getContent()),

@@ -314,4 +314,34 @@ class ArticleControllerTest {
 
         verify(articleServicePort).getCategoriesIds(articleId);
     }
+
+    @Test
+    void getAllArticlesOfShoppingCart_success() throws Exception {
+        // Mocking data
+        List<Long> idsArticles = Arrays.asList(1L, 2L, 3L);
+        List<Long> idsCategories = Arrays.asList(1L);
+        List<Long> idsBrands = Arrays.asList(1L, 2L);
+        int page = 0;
+        int size = 10;
+        String order = "ASC";
+
+        PaginationInfo<Article> response = new PaginationInfo<>(List.of(), 1, 1, 1, 1, false, false);
+        PaginationInfoResponse<ArticleResponse> mockResponse = new PaginationInfoResponse<>();
+        when(articleServicePort.getArticlesOfShoppingCart(page, size, idsArticles, order, idsCategories, idsBrands))
+                .thenReturn(response);
+        when(articleResponseMapper.toPaginationInfoResponse(response))
+                .thenReturn(mockResponse);
+
+        mockMvc.perform(get("/article/shopping-cart")
+                        .param("page", String.valueOf(page))
+                        .param("size", String.valueOf(size))
+                        .param("idsArticles", "1,2,3")
+                        .param("order", "ASC")
+                        .param("idsCategories", "1")
+                        .param("idsBrands", "1,2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(mockResponse)));
+    }
 }

@@ -48,19 +48,10 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-// JaCoCo configuration
-jacoco {
-	toolVersion = "0.8.8" // Ensure this is the version you need
-}
-
-tasks.test {
-	finalizedBy(tasks.jacocoTestReport) // Ensure the report is generated after tests
-}
-
 tasks.jacocoTestReport {
-	dependsOn(tasks.test) // Make sure tests are run before generating the report
 	reports {
-		xml.required.set(true) // Generates an XML report
-		html.required.set(true) // Generates an HTML report
+		xml.required = true
+		csv.required = false
+		html.outputLocation = file("$buildDir/reports/jacoco")
 	}
 }

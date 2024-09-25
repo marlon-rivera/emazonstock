@@ -132,4 +132,54 @@ public class ArticleController {
         return ResponseEntity.ok(articleServicePort.getCategoriesIds(id));
     }
 
+    @Operation(
+            summary = "Get all articles in the shopping cart",
+            description = "This endpoint retrieves all articles in the shopping cart, with pagination, sorting, and filtering by article, category, and brand IDs."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Successfully retrieved the articles in the shopping cart.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = PaginationInfoResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = "Invalid request due to incorrect parameters. Verify that the parameters sent comply with the expected format and are valid.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ValidationExceptionResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "No articles found in the shopping cart",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class)
+            )
+    )
+    @GetMapping("/shopping-cart")
+    public ResponseEntity<PaginationInfoResponse<ArticleResponse>> getAllArticlesOfShoppingCart(
+            @Parameter(description = "Page number to list", example = "0")
+            @RequestParam(value = "page", defaultValue = Constants.DEFAULT_VALUE_NUMBER_PAGE) @Min(value = Constants.MIN_VALUE_PAGE, message = Constants.EXCEPTION_MIN_VALUE_PAGE) int page,
+            @Parameter(description = "Number of articles per page", example = "10")
+            @RequestParam(value = "size", defaultValue = Constants.DEFAULT_VALUE_SIZE_PAGE) @Min(value = Constants.MIN_VALUES_PER_PAGE, message = Constants.EXCEPTION_MIN_VALUES_PER_PAGE) int size,
+            @Parameter(description = "Ids of articles to search", example = "[1, 2, 3]")
+            @RequestParam(value = "idsArticles") List<Long> idsArticles,
+            @Parameter(description = "Sort order (e.g., 'ASC' for ascending or 'DESC' for descending)", example = "ASC")
+            @RequestParam(value = "order", defaultValue = Constants.ORDER_ASC) @Pattern(regexp = Constants.REGEX_ORDER, message = Constants.EXCEPTION_REGEX_ORDER) String order,
+            @Parameter(description = "List of category IDs to filter by", example = "[1, 2, 3]")
+            @RequestParam(value = "idsCategories") List<Long> idsCategories,
+            @Parameter(description = "List of brand IDs to filter by", example = "[1, 2, 3]")
+            @RequestParam(value = "idsBrands") List<Long> idsBrands
+    ) {
+        return ResponseEntity.ok(
+                articleResponseMapper.toPaginationInfoResponse(
+                        articleServicePort.getArticlesOfShoppingCart(page, size, idsArticles, order, idsCategories, idsBrands)
+                )
+        );
+    }
+
 }

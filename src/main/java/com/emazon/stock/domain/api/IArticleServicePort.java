@@ -13,6 +13,8 @@ public interface IArticleServicePort {
     void increaseStockArticle(Long id, BigInteger quantity);
     BigInteger getQuantityArticle(Long id);
     List<Long> getCategoriesIds(Long idArticle);
+    PaginationInfo<Article> getArticlesOfShoppingCart(int page, int size, List<Long> idsArticles, String order, List<Long> idsCategories, List<Long> idsBrands);
+
 
 
 }

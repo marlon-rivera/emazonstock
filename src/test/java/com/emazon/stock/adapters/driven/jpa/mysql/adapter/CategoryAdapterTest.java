@@ -98,11 +98,11 @@ class CategoryAdapterTest {
     void getAllCategories_ShouldReturnPaginatedCategoriesWhenOrderIsDesc() {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<CategoryEntity> page =  new PageImpl<>(List.of(categoryEntity2, categoryEntity), pageRequest, 2);
-        when(repository.findAllByOrderByNameAsc(pageRequest)).thenReturn(page);
+        when(repository.findAllByOrderByNameDesc(pageRequest)).thenReturn(page);
         when(mapper.toCategoryList(page.getContent())).thenReturn(List.of(category2,category));
 
 
-        PaginationInfo<Category> result = adapter.getAllCategories(0, 10, "ASC");
+        PaginationInfo<Category> result = adapter.getAllCategories(0, 10, "DESC");
 
         assertNotNull(result);
         assertEquals(2, result.getTotalElements());

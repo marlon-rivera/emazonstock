@@ -5,6 +5,7 @@ import com.emazon.stock.adapters.driving.http.dto.response.BrandResponse;
 import com.emazon.stock.adapters.driving.http.dto.response.PaginationInfoResponse;
 import com.emazon.stock.adapters.driving.http.mapper.request.IBrandRequestMapper;
 import com.emazon.stock.adapters.driving.http.mapper.response.IBrandResponseMapper;
+import com.emazon.stock.configuration.jwt.JWTAuthFilter;
 import com.emazon.stock.domain.api.IBrandServicePort;
 import com.emazon.stock.domain.model.Brand;
 import com.emazon.stock.domain.model.PaginationInfo;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = BrandController.class)
 @ExtendWith(MockitoExtension.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BrandControllerTest {
 
     @Autowired
@@ -46,6 +49,9 @@ class BrandControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private JWTAuthFilter jwtAuthFilter;
 
     @Test
     void testSaveBrand() throws Exception {

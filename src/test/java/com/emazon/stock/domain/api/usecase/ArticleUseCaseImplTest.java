@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -277,9 +278,10 @@ class ArticleUseCaseImplTest {
         when(articlePersistencePort.getArticleById(idArticle)).thenReturn(Optional.of(article));
 
         List<Long> actualCategoryIds = articleUseCase.getCategoriesIds(idArticle);
-
         List<Long> expectedCategoryIds = List.of(1L, 2L);
-        assertEquals(expectedCategoryIds, actualCategoryIds);
+        List<Long> sortedExpected = expectedCategoryIds.stream().sorted().toList();
+        List<Long> sortedActual = actualCategoryIds.stream().sorted().toList();
+        assertEquals(sortedExpected, sortedActual);
     }
 
     @Test
@@ -291,4 +293,88 @@ class ArticleUseCaseImplTest {
         assertThrows(ArticleNoDataFoundException.class, () -> articleUseCase.getCategoriesIds(idArticle));
     }
 
+    @Test
+    void testGetArticlesOfShoppingCart_withCategoriesAndBrands() {
+        int page = 0;
+        int size = 10;
+        String order = "ASC";
+        List<Long> idsArticles = List.of(1L, 2L, 3L);
+        List<Long> idsCategories = List.of(1L, 2L);
+        List<Long> idsBrands = List.of(1L, 2L);
+
+        PaginationInfo<Article> expectedPaginationInfo = new PaginationInfo<>(List.of(), 1, 0, 0, 1, false, false);
+
+        when(articlePersistencePort.findByIdsAndCategoriesAndBrands(page, size, idsArticles, order, idsCategories, idsBrands))
+                .thenReturn(expectedPaginationInfo);
+
+        PaginationInfo<Article> result = articleUseCase.getArticlesOfShoppingCart(page, size, idsArticles, order, idsCategories, idsBrands);
+
+        assertEquals(expectedPaginationInfo, result);
+
+        verify(articlePersistencePort, times(1)).findByIdsAndCategoriesAndBrands(page, size, idsArticles, order, idsCategories, idsBrands);
+    }
+
+    @Test
+    void testGetArticlesOfShoppingCart_withOnlyBrands() {
+
+        int page = 0;
+        int size = 10;
+        String order = "ASC";
+        List<Long> idsArticles = List.of(1L, 2L, 3L);
+        List<Long> idsCategories = List.of();
+        List<Long> idsBrands = List.of(1L, 2L);
+
+        PaginationInfo<Article> expectedPaginationInfo = new PaginationInfo<>(List.of(), 1, 0, 0, 1, false, false);
+
+        when(articlePersistencePort.findByBrandIdsAndIds(page, size, idsArticles, order, idsBrands))
+                .thenReturn(expectedPaginationInfo);
+
+        PaginationInfo<Article> result = articleUseCase.getArticlesOfShoppingCart(page, size, idsArticles, order, idsCategories, idsBrands);
+
+        assertEquals(expectedPaginationInfo, result);
+
+        verify(articlePersistencePort, times(1)).findByBrandIdsAndIds(page, size, idsArticles, order, idsBrands);
+    }
+
+    @Test
+     void testGetArticlesOfShoppingCart_withOnlyCategories() {
+        int page = 0;
+        int size = 10;
+        String order = "ASC";
+        List<Long> idsArticles = List.of(1L, 2L, 3L);
+        List<Long> idsCategories = List.of(1L, 2L);
+        List<Long> idsBrands = List.of();
+
+        PaginationInfo<Article> expectedPaginationInfo = new PaginationInfo<>(List.of(), 1, 0, 0, 1, false, false);
+
+        when(articlePersistencePort.findByCategoriesIdsAndIds(page, size, idsArticles, order, idsCategories))
+                .thenReturn(expectedPaginationInfo);
+
+        PaginationInfo<Article> result = articleUseCase.getArticlesOfShoppingCart(page, size, idsArticles, order, idsCategories, idsBrands);
+
+        assertEquals(expectedPaginationInfo, result);
+
+        verify(articlePersistencePort, times(1)).findByCategoriesIdsAndIds(page, size, idsArticles, order, idsCategories);
+    }
+
+    @Test
+    void testGetArticlesOfShoppingCart_withOnlyIdsArticles() {
+        int page = 0;
+        int size = 10;
+        String order = "ASC";
+        List<Long> idsArticles = List.of(1L, 2L, 3L);
+        List<Long> idsCategories = List.of();
+        List<Long> idsBrands = List.of();
+
+        PaginationInfo<Article> expectedPaginationInfo = new PaginationInfo<>(List.of(), 1, 0, 0, 1, false, false);
+
+        when(articlePersistencePort.findByIds(page, size, idsArticles, order))
+                .thenReturn(expectedPaginationInfo);
+
+        PaginationInfo<Article> result = articleUseCase.getArticlesOfShoppingCart(page, size, idsArticles, order, idsCategories, idsBrands);
+
+        assertEquals(expectedPaginationInfo, result);
+
+        verify(articlePersistencePort, times(1)).findByIds(page, size, idsArticles, order);
+    }
 }
