@@ -1,6 +1,7 @@
 package com.emazon.stock.adapters.driving.http.controller;
 
 import com.emazon.stock.adapters.driving.http.dto.request.ArticleRequest;
+import com.emazon.stock.adapters.driving.http.dto.request.PurchaseRequest;
 import com.emazon.stock.adapters.driving.http.dto.response.ArticleResponse;
 import com.emazon.stock.adapters.driving.http.dto.response.PaginationInfoResponse;
 import com.emazon.stock.adapters.driving.http.mapper.request.IArticleRequestMapper;
@@ -180,6 +181,12 @@ public class ArticleController {
                         articleServicePort.getArticlesOfShoppingCart(page, size, idsArticles, order, idsCategories, idsBrands)
                 )
         );
+    }
+
+    @PostMapping("/purchase")
+    public ResponseEntity<Void> purchase(@RequestBody PurchaseRequest purchaseRequest){
+        articleServicePort.purchase(purchaseRequest.getIdsArticles(), purchaseRequest.getQuantities());
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -3,25 +3,22 @@ package com.emazon.stock.domain.api.usecase;
 import com.emazon.stock.domain.api.IArticleServicePort;
 import com.emazon.stock.domain.api.IBrandServicePort;
 import com.emazon.stock.domain.api.ICategoryServicePort;
-import com.emazon.stock.domain.exception.article.ArticleExceedsCategoriesException;
-import com.emazon.stock.domain.exception.article.ArticleMinimumCategoriesException;
-import com.emazon.stock.domain.exception.article.ArticleNoDataFoundException;
-import com.emazon.stock.domain.exception.article.ArticleWithRepeatedCategoriesException;
+import com.emazon.stock.domain.exception.article.*;
 import com.emazon.stock.domain.exception.brand.BrandNoDataFoundException;
 import com.emazon.stock.domain.exception.category.CategoryNoDataFoundException;
 import com.emazon.stock.domain.model.Article;
 import com.emazon.stock.domain.model.Category;
 import com.emazon.stock.domain.model.PaginationInfo;
+import com.emazon.stock.domain.model.Verification;
 import com.emazon.stock.domain.spi.IArticlePersistencePort;
+import com.emazon.stock.domain.spi.IReportClient;
+import com.emazon.stock.domain.spi.ISupplyClient;
 import com.emazon.stock.utils.Constants;
 import lombok.RequiredArgsConstructor;
 
 
 import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class ArticleUseCaseImpl implements IArticleServicePort {
@@ -29,6 +26,8 @@ public class ArticleUseCaseImpl implements IArticleServicePort {
     private final IArticlePersistencePort iArticlePersistencePort;
     private final IBrandServicePort iBrandServicePort;
     private final ICategoryServicePort categoryServicePort;
+    private final IReportClient reportClient;
+    private final ISupplyClient supplyClient;
 
     @Override
     public void saveArticle(Article article) {
@@ -106,5 +105,58 @@ public class ArticleUseCaseImpl implements IArticleServicePort {
             return iArticlePersistencePort.findByCategoriesIdsAndIds(page, size, idsArticles, order, idsCategories);
         }
         return iArticlePersistencePort.findByIds(page, size, idsArticles, order);
+    }
+
+    @Override
+    public void purchase(List<Long> idsArticles, List<BigInteger> quantities) {
+        Map<Long, BigInteger> originalQuantities = new HashMap<>();
+        List<Article> articlesToSave = new ArrayList<>();
+
+        for (int i = 0; i < idsArticles.size(); i++) {
+            Long id = idsArticles.get(i);
+            BigInteger quantity = quantities.get(i);
+            validateStockArticle(id, quantity, originalQuantities);
+        }
+        for (int i = 0; i < idsArticles.size(); i++) {
+            Article article = decreaseStockArticle(idsArticles.get(i), quantities.get(i), originalQuantities);
+            articlesToSave.add(article);
+        }
+        for (Article article : articlesToSave) {
+            iArticlePersistencePort.saveArticle(article);
+        }
+
+        sendSale(articlesToSave, quantities);
+
+    }
+
+    private void validateStockArticle(Long id, BigInteger quantity, Map<Long, BigInteger> originalQuantities) {
+        Optional<Article> articleOp = iArticlePersistencePort.getArticleById(id);
+        if (articleOp.isEmpty()) {
+            throw new ArticleNoDataFoundException();
+        }
+        Article article = articleOp.get();
+        originalQuantities.put(article.getId(), BigInteger.valueOf(article.getQuantity()));
+
+        if (article.getQuantity() - quantity.intValue() < 0) {
+            reportClient.addVerification(new Verification(article.getId(), article.getQuantity(), quantity.intValue(), Constants.STATUS_FAIL, article.getPrice()));
+            throw new ArticleInsufficientStockToPurchaseException(article.getName());
+        }
+    }
+
+    @Override
+    public Article decreaseStockArticle(Long id, BigInteger quantity, Map<Long, BigInteger> originalQuantities) {
+        Optional<Article> articleOp = iArticlePersistencePort.getArticleById(id);
+        if (articleOp.isEmpty()) {
+            throw new ArticleNoDataFoundException();
+        }
+        Article article = articleOp.get();
+
+        article.setQuantity(article.getQuantity() - quantity.intValue());
+        reportClient.addVerification(new Verification(article.getId(), article.getQuantity(), quantity.intValue(), Constants.STATUS_SUCCESS, article.getPrice()));
+        return article;
+    }
+
+    private void sendSale(List<Article> articles, List<BigInteger> quantities){
+        supplyClient.sendSale(articles, quantities);
     }
 }

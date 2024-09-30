@@ -5,6 +5,7 @@ import com.emazon.stock.domain.model.PaginationInfo;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
 public interface IArticleServicePort {
 
@@ -14,6 +15,8 @@ public interface IArticleServicePort {
     BigInteger getQuantityArticle(Long id);
     List<Long> getCategoriesIds(Long idArticle);
     PaginationInfo<Article> getArticlesOfShoppingCart(int page, int size, List<Long> idsArticles, String order, List<Long> idsCategories, List<Long> idsBrands);
+    Article decreaseStockArticle(Long id, BigInteger quantity, Map<Long, BigInteger> originalQuantities);
+    void purchase(List<Long> idsArticles, List<BigInteger> quantities);
 
 
 

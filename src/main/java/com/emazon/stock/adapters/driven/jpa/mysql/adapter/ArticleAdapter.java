@@ -8,6 +8,7 @@ import com.emazon.stock.domain.model.Article;
 import com.emazon.stock.domain.model.PaginationInfo;
 import com.emazon.stock.domain.spi.IArticlePersistencePort;
 import com.emazon.stock.utils.Constants;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +26,7 @@ public class ArticleAdapter implements IArticlePersistencePort {
 
     @Override
     public void saveArticle(Article article) {
-        articleRepository.save(articleEntityMapper.toArticleEntity(article));
+        articleRepository.saveAndFlush(articleEntityMapper.toArticleEntity(article));
     }
 
     @Override
@@ -112,6 +113,4 @@ public class ArticleAdapter implements IArticlePersistencePort {
                 articleEntities.hasPrevious()
         );
     }
-
-
 }

@@ -18,6 +18,4 @@ public interface IArticlePersistencePort {
     PaginationInfo<Article> findByCategoriesIdsAndIds(int page, int size, List<Long> idsArticles, String order, List<Long> idsCategories);
     PaginationInfo<Article> findByBrandIdsAndIds(int page, int size, List<Long> idsArticles, String order, List<Long> idsBrands);
     PaginationInfo<Article> findByIds(int page, int size, List<Long> idsArticles, String order);
-
-
 }

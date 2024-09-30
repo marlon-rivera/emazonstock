@@ -1,5 +1,9 @@
 package com.emazon.stock.configuration;
 
+import com.emazon.stock.adapters.driven.feign.IReportFeignClient;
+import com.emazon.stock.adapters.driven.feign.ISupplyFeignClient;
+import com.emazon.stock.adapters.driven.feign.ReportFeignAdapter;
+import com.emazon.stock.adapters.driven.feign.SupplyFeignAdapter;
 import com.emazon.stock.adapters.driven.jpa.mysql.adapter.ArticleAdapter;
 import com.emazon.stock.adapters.driven.jpa.mysql.adapter.BrandAdapter;
 import com.emazon.stock.adapters.driven.jpa.mysql.adapter.CategoryAdapter;
@@ -15,9 +19,7 @@ import com.emazon.stock.domain.api.ICategoryServicePort;
 import com.emazon.stock.domain.api.usecase.ArticleUseCaseImpl;
 import com.emazon.stock.domain.api.usecase.BrandUseCaseImpl;
 import com.emazon.stock.domain.api.usecase.CategoryUseCaseImpl;
-import com.emazon.stock.domain.spi.IArticlePersistencePort;
-import com.emazon.stock.domain.spi.IBrandPersistencePort;
-import com.emazon.stock.domain.spi.ICategoryPersistencePort;
+import com.emazon.stock.domain.spi.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +34,8 @@ public class BeanConfiguration {
     private final IBrandEntityMapper brandEntityMapper;
     private final IArticleRepository articleRepository;
     private final IArticleEntityMapper articleEntityMapper;
+    private final IReportFeignClient reportFeignClient;
+    private final ISupplyFeignClient supplyFeignClient;
 
     @Bean
     public ICategoryPersistencePort categoryPersistencePort(){
@@ -55,5 +59,15 @@ public class BeanConfiguration {
     public IArticlePersistencePort articlePersistencePort(){return new ArticleAdapter(articleRepository, articleEntityMapper);}
 
     @Bean
-    public IArticleServicePort articleServicePort(){return new ArticleUseCaseImpl(articlePersistencePort(), brandServicePort(), categoryServicePort());}
+    public IReportClient reportClient(){
+        return new ReportFeignAdapter(reportFeignClient);
+    }
+
+    @Bean
+    public ISupplyClient supplyClient(){
+       return new SupplyFeignAdapter(supplyFeignClient);
+    }
+
+    @Bean
+    public IArticleServicePort articleServicePort(){return new ArticleUseCaseImpl(articlePersistencePort(), brandServicePort(), categoryServicePort(), reportClient(), supplyClient());}
 }

@@ -21,6 +21,8 @@ public class Constants {
     public static final String HEADER_AUTH = "Authorization";
     public static final String ROLE_ = "ROLE_";
     public static final String ROLE = "ROLE";
+    public static final String STATUS_SUCCESS = "SUCCESS";
+    public static final String STATUS_FAIL = "FAIL";
 
 
     //Exceptions messages
@@ -52,5 +54,8 @@ public class Constants {
     public static final String ARTICLE_FIND_BY_NAME = "name";
     public static final String ARTICLE_FIND_BY_BRAND_NAME = "brand.name";
     public static final String REGEX_ORDERING_CRITERIA_ARTICLE = "brand|name";
+    public static final String EXCEPTION_IDS_ARTICLES_NOT_BE_EMPTY = "La lista de articulos a comprar no puede estar vacia.";
+    public static final String EXCEPTION_QUANTITIES_ARTICLES_NOT_BE_EMPTY = "La lista de cantidades de los articulos a comprar no puede estar vacia.";
+    public static final String EXCEPTION_ARTICLE_STOCK_INSUFFICIENT = "La cantidad que quiere comprar es mayor a la actual del producto: ";
 
 }

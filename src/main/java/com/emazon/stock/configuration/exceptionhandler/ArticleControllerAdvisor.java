@@ -1,9 +1,6 @@
 package com.emazon.stock.configuration.exceptionhandler;
 
-import com.emazon.stock.domain.exception.article.ArticleExceedsCategoriesException;
-import com.emazon.stock.domain.exception.article.ArticleMinimumCategoriesException;
-import com.emazon.stock.domain.exception.article.ArticleNoDataFoundException;
-import com.emazon.stock.domain.exception.article.ArticleWithRepeatedCategoriesException;
+import com.emazon.stock.domain.exception.article.*;
 import com.emazon.stock.utils.Constants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +36,13 @@ public class ArticleControllerAdvisor {
     @ExceptionHandler(ArticleNoDataFoundException.class)
     public ResponseEntity<ExceptionResponse> handleArticleNoDataFound(ArticleNoDataFoundException ex){
         return new ResponseEntity<>(new ExceptionResponse(Constants.EXCEPTION_ARTICLE_NO_DATA_FOUND, HttpStatus.NOT_FOUND.toString(), LocalDateTime.now()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ArticleInsufficientStockToPurchaseException.class)
+    public ResponseEntity<ExceptionResponse> handleArticleInsufficientStockToPurchase(ArticleInsufficientStockToPurchaseException ex){
+        return ResponseEntity.badRequest().body(
+            new ExceptionResponse(Constants.EXCEPTION_ARTICLE_STOCK_INSUFFICIENT + ex.getMessage(), HttpStatus.BAD_REQUEST.toString(), LocalDateTime.now())
+        );
     }
 
 }
